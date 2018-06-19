@@ -1,0 +1,138 @@
+# PAP-Vettel-
+#include <SoftwareSerial.h>   //Inlcui a biblioteca SoftwareSerial.h
+#include <Servo.h>
+
+Servo servomotor;  // Objeto que representa o servomotor
+int posicao = 100;    // Variavel que define a posicao inicial do servomotor
+
+#define RxD         1 //Define RxD como 6
+#define TxD         0 //Define TxD como 7
+SoftwareSerial blueToothSerial(RxD,TxD); //Instância a biblioteca SoftwareSerial.h
+
+
+// Variaveis (valores que podem ser alterados ao longo do programa)
+
+int EA = 2; // Input do driver de corrente - Definicao do sentido de rotacao do motor associada ao pino 7
+int IN1 = 3; // Input do driver de corrente - Definicao do sentido de rotacao do motor associada ao pino 5
+int IN2 = 4; // Enabler do motor - Associacao do pino 6 a velocidade atribuida aos motores da direita
+int IN3 = 5; // Input do driver de corrente - Definicao do sentido de rotacao do motor associada ao pino 4
+int IN4 = 6; // Input do driver de corrente - Definicao do sentido de rotacao do motor associada ao pino 2
+int EB = 7; // Enabler do motor - Associacao do pino 3 a velocidade atribuida aos motores da esquerda        
+
+unsigned long previousMillis = 0;        
+const long interval = 500;
+
+int md = 0;                        
+
+void motores(int vel, int modo, int tempo) {
+  
+  switch(modo)
+  {
+  // andar em frente
+  case 1:  
+  analogWrite (EA, vel); // Velocidade motor direita
+  analogWrite (EB, vel); // Velocidade motor esquerda
+  digitalWrite (IN1, HIGH);
+  digitalWrite (IN2, LOW);
+  digitalWrite (IN3, HIGH);
+  digitalWrite (IN4, LOW);
+  delay(tempo*1000);
+  break;
+  
+  // virar direita  
+  case 3:  
+  analogWrite (EA, vel); // Velocidade motor direita
+  analogWrite (EB, vel); // Velocidade motor esquerda
+  digitalWrite (IN1, HIGH);
+  digitalWrite (IN2, LOW);
+  digitalWrite (IN3, LOW);
+  digitalWrite (IN4, HIGH);
+  delay(tempo*1000);
+  break;
+  
+  /*  
+  //virar esquerda 
+  case 4:  
+  analogWrite (VelMotDir, vel); // Velocidade motor direita
+  analogWrite (VelMotEsq, vel); // Velocidade motor esquerda
+  digitalWrite (EnableDir1, LOW);
+  digitalWrite (EnableDir2, HIGH);
+  digitalWrite (EnableEsq1, LOW);
+  digitalWrite (EnableEsq2, HIGH);
+  delay(tempo*1000);
+  break;
+  
+  //andar para tras
+  case 2:  
+  analogWrite (VelMotDir, vel); // Velocidade motor direita
+  analogWrite (VelMotEsq, vel); // Velocidade motor esquerda
+  digitalWrite (EnableDir1, LOW);
+  digitalWrite (EnableDir2, HIGH);
+  digitalWrite (EnableEsq1, HIGH);
+  digitalWrite (EnableEsq2, LOW);
+  delay(tempo*1000);
+  break;
+*/
+  }
+
+}
+
+
+// Void Setup (definicoes dos pinos)
+
+void setup ()
+{
+  Serial.begin(9600);
+  servomotor.attach(9);
+  servomotor.write(posicao);
+//  emparelhar_dispositivo();
+  pinMode (IN1, OUTPUT);
+  pinMode (IN2, OUTPUT);
+  pinMode (EA, OUTPUT);
+  pinMode (IN3, OUTPUT);
+  pinMode (IN4, OUTPUT);
+  pinMode (EA, OUTPUT);
+}
+
+// Void Loop (programa em si, quais as ordens que o robo deve seguir)
+
+void loop ()
+{
+  motores(255,3,0); //Substituir o 3 por um numero que mande o robo virar, andar para tras e para a frente
+} 
+/*if (Serial.available() > 0)
+  {
+    md = Serial.read();
+    if(3>md>0)
+    {
+      motores(255,md,0);
+    }
+    if(md>2)
+    {
+      motores(255,md,0);                                                                                                    
+    }
+    if(md < 1)
+    {
+      motores(0,1,0);
+    }
+  }
+
+}
+*/
+
+/*
+ * void emparelhar_dispositivo()
+{
+  blueToothSerial.begin(9600); // Configura o baud rate do bluetooth como 38400
+  blueToothSerial.print("\r\n+STWMOD=0\r\n"); // Configura o módulo bluetooth para trabalhar como slave
+  blueToothSerial.print("\r\n+STNA=SeedBTShield\r\n"); // Configura o nome do disopsitivo bluetooth
+  blueToothSerial.print("\r\n+STOAUT=1\r\n"); // Permite que outros dispositivos encontrem o módulo bluetooth
+  blueToothSerial.print("\r\n+STAUTO=0\r\n"); // Desabilita a auto conexão
+  delay(2000); // Aguarda 2 segundos
+  blueToothSerial.print("\r\n+INQ=1\r\n"); // Habilita modo de paridade
+  delay(2000); // Aguarda 2 segundos
+  blueToothSerial.flush(); // Dá um flush na serial do módulo bluetooth
+}
+*/
+Fim da conversa de chat
+Escreve uma mensagem...
